@@ -1,0 +1,21 @@
+{
+  "version": "0.1",
+  "name": "OpenMRS Manager Dashboard",
+  "description": "Dashboards for a program or facility manager",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/img/icons/openmrs-16.png",
+    "48": "/img/icons/openmrs-48.png",
+    "128": "/img/icons/openmrs-128.png"
+  },
+  "developer": {
+    "name": "#OMRS15 Hackathon Team 1",
+    "url": "http://openmrs.org"
+  },
+  "default_locale": "en",
+  "activities": {
+    "openmrs": {
+      "href": "*"
+    }
+  }
+}
