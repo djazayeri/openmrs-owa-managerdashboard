@@ -5,7 +5,8 @@ var zip = require('gulp-zip');
 var LOCAL_OWA_FOLDER = '/Users/djazayer/.OpenMRS/owa/';
 var THIS_APP_NAME = 'managerdashboard';
 
-var sources = ['manifest.webapp', 'index.html', '**/*.js', '**/*.css', '**/*.png',
+var sources = ['manifest.webapp', '**/*.html', '**/*.js', '**/*.css', '**/*.png',
+    '**/*.otf', '**/*.eot', '**/*.svg', '**/*.ttf', '**/*.woff', '**/*.woff2',
     '!node_modules', '!node_modules/**', '!gulpfile.js'];
 
 gulp.task('default', function () {

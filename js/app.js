@@ -1,4 +1,17 @@
-angular.module("managerdashboard", ["ngResource"])
+angular.module("managerdashboard", ["ngResource", "ui.router", "ui.bootstrap", "nvd3"])
+
+    .config(function ($stateProvider, $urlRouterProvider) {
+
+        $urlRouterProvider.otherwise("last-week-encounters-graph");
+
+        $stateProvider
+            .state("last-week-encounters-graph", {
+                url: "/last-week-encounters-graph",
+                templateUrl: "html/last-week-encounters-graph.html",
+                controller: "LastWeekEncountersGraphController"
+            });
+    })
+
     .factory("AppConfig", ["$http", function ($http) {
         var data = {};
         var promise = $http.get("manifest.webapp");
@@ -9,24 +22,7 @@ angular.module("managerdashboard", ["ngResource"])
         data.$promise = promise;
         return data;
     }])
-    .factory("Visit", ["$resource", function ($resource) {
-        return $resource("../../ws/rest/v1/visit/:uuid", {
-            uuid: '@uuid'
-        }, {
-            query: {method: 'GET', isArray: false} // OpenMRS RESTWS returns { "results": [] }
-        });
-    }])
-    //.factory("Resources", ["$resource", "AppConfig", function($resource, AppConfig) {
-    //    var resources = {};
-    //    AppConfig.$promise.then(function() {
-    //        resources.Visit = $resource(AppConfig.openmrsBaseUrl + "/ws/rest/v1/visit/:uuid", {
-    //            uuid: '@uuid'
-    //        },{
-    //            query: { method:'GET', isArray:false } // OpenMRS RESTWS returns { "results": [] }
-    //        });
-    //    });
-    //    return resources;
-    //}])
+
     .controller("DashboardController", ["$scope", "Visit", function ($scope, Visit) {
         $scope.activeVisits = {loading: true};
         Visit.query({

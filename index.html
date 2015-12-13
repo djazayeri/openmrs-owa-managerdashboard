@@ -6,24 +6,34 @@
     <title>Manager's Dashboard</title>
     <meta name="description" content="OpenMRS Manager's Dashboard">
     <meta name="author" content="#OMRS15 Team 1">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/nv.d3.css">
+    <script src="js/lib/lodash.min.js"></script>
+    <script src="js/lib/moment.js"></script>
     <script src="js/lib/angular.min.js"></script>
     <script src="js/lib/angular-resource.min.js"></script>
+    <script src="js/lib/angular-ui-router.min.js"></script>
+    <script src="js/lib/ui-bootstrap-tpls-0.14.3.min.js"></script>
+    <script src="js/lib/d3.min.js"></script>
+    <script src="js/lib/nv.d3.min.js"></script>
+    <script src="js/lib/angular-nvd3.min.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/last-week-encounters-graph.js"></script>
 </head>
 
-<body ng-app="managerdashboard" ng-controller="DashboardController">
+<body ng-app="managerdashboard">
 
-<h1>Active Visits</h1>
+    <style type="text/css">
+        /* See https://angular-ui.github.io/bootstrap/ */
+        .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+    </style>
 
-<table>
-    <tr ng-repeat="v in activeVisits">
-        <td>{{ v.patient.display }}</td>
-        <td>{{ v.visitType.display }}</td>
-        <td>{{ v.startDatetime | date }}</td>
-        <td>{{ v.stopDatetime | date }}</td>
-    </tr>
-</table>
-<small><em>Showing: {{ activeVisits.length }}</em></small>
+    <div class="container">
+        <ui-view/>
+    </div>
 
 </body>
 </html>
