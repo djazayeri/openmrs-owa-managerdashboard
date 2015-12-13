@@ -15,7 +15,7 @@ To build, do:
 
 To quickly deploy the build locally, set the LOCAL_OWA_FOLDER in gulpfile and do
 
-    deploy-local
+    gulp deploy-local
 
 
 ## Required Modules (server-side)
