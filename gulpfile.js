@@ -2,9 +2,19 @@
 var gulp = require('gulp');
 var zip = require('gulp-zip');
 
+var LOCAL_OWA_FOLDER = '/Users/djazayer/.OpenMRS/owa/';
+var THIS_APP_NAME = 'managerdashboard';
+
+var sources = ['manifest.webapp', 'index.html', '**/*.js', '**/*.css', '**/*.png',
+    '!node_modules', '!node_modules/**', '!gulpfile.js'];
+
 gulp.task('default', function () {
-    return gulp.src(['manifest.webapp', 'index.html', '**/*.js', '**/*.css', '**/*.png',
-            '!node_modules', '!node_modules/**'])
-        .pipe(zip('managerdashboard.owa.zip'))
+    return gulp.src(sources)
+        .pipe(zip(THIS_APP_NAME + '.zip'))
         .pipe(gulp.dest('dist'));
+});
+
+gulp.task('deploy-local', function () {
+    return gulp.src(sources)
+        .pipe(gulp.dest(LOCAL_OWA_FOLDER + THIS_APP_NAME));
 });
