@@ -6,7 +6,7 @@ angular.module("managerdashboard")
                 var dates = [];
                 var promises = [];
                 var results = {};
-                var data = {
+                var encountersData = {
                     "key" : "Patients with encounters",
                     "bar" : true,
                     "values" : []
@@ -31,7 +31,7 @@ angular.module("managerdashboard")
                 }
 
                 $q.all(promises).then(function() {
-                    data.values = _.map(dates, function(d) {
+                    encountersData.values = _.map(dates, function(d) {
                         var showMonth = d === dates[0] || d.date() === 1;
                         return {
                             date: d, // d.format(showMonth ? "D MMM" : "D"),
@@ -50,35 +50,40 @@ angular.module("managerdashboard")
 
                 return {
                     dates: dates,
-                    options: {
-                        chart: {
-                            type: 'historicalBarChart',
-                            height: 500,
-                            x: function (d) {
-                                return d.date.valueOf();
-                            },
-                            y: function (d) {
-                                return d.value;
-                            },
-                            showValues: true,
-                            valueFormat: function(d) {
-                                return Math.round(d);
-                            },
-                            xAxis: {
-                                tickFormat: formatDateShort
-                            },
-                            yAxis: {
-                                axisLabel: "Patients with Encounters",
-                                "axisLabelDistance": -10
-                            },
-                            tooltip: {
-                                keyFormatter: formatDateLong
-                            }
-                        }
+                    genders: {
+
                     },
-                    data: [
-                        data
-                    ]
+                    encounters: {
+                        options: {
+                            chart: {
+                                type: 'historicalBarChart',
+                                height: 500,
+                                x: function (d) {
+                                    return d.date.valueOf();
+                                },
+                                y: function (d) {
+                                    return d.value;
+                                },
+                                showValues: true,
+                                valueFormat: function (d) {
+                                    return Math.round(d);
+                                },
+                                xAxis: {
+                                    tickFormat: formatDateShort
+                                },
+                                yAxis: {
+                                    axisLabel: "Patients with Encounters",
+                                    "axisLabelDistance": -10
+                                },
+                                tooltip: {
+                                    keyFormatter: formatDateLong
+                                }
+                            }
+                        },
+                        data: [
+                            encountersData
+                        ]
+                    }
                 }
             }
         }
