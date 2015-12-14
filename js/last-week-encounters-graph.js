@@ -2,7 +2,7 @@ angular.module("managerdashboard")
 
     .factory("GraphGenerator", [ "EvaluateCohort", "$q", function(EvaluateCohort, $q) {
         return {
-            generateFor: function(fromDate, toDate) {
+            generateFor: function(fromDate, toDate, step) {
                 var dates = [];
                 var promises = [];
                 var results = {};
@@ -12,22 +12,26 @@ angular.module("managerdashboard")
                     "values" : []
                 };
 
-                function handleDate(date) {
-                    var startOfDay = date.clone();
-                    dates.push(startOfDay);
+                var genderData = [];
+                // reportingrest does not yet give us a way to do a compound query, so we can't combine gender with encounter during period
+
+                function handleDate(date, step) {
+                    var startOfPeriod = date.clone();
+                    dates.push(startOfPeriod);
+                    var endOfPeriod = moment(startOfPeriod).add(step - 1, 'day').endOf("day");
                     var query = EvaluateCohort.query({
                         key: "anyEncounterDuringPeriod",
-                        startDate: startOfDay.toISOString(),
-                        endDate: moment(startOfDay).endOf("day").toISOString()
+                        startDate: startOfPeriod.toISOString(),
+                        endDate: endOfPeriod.toISOString()
                     });
                     query.$promise.then(function(response) {
-                        results[startOfDay.toISOString()] = response.members.length;
+                        results[startOfPeriod.toISOString()] = response.members.length;
                     });
                     promises.push(query.$promise);
                 }
 
-                for (var date = fromDate.clone(); date.isBefore(toDate); date.add(1, 'day')) {
-                    handleDate(date);
+                for (var date = fromDate.clone(); date.isBefore(toDate); date.add(step, 'day')) {
+                    handleDate(date, step);
                 }
 
                 $q.all(promises).then(function() {
@@ -51,7 +55,25 @@ angular.module("managerdashboard")
                 return {
                     dates: dates,
                     genders: {
-
+                        options: {
+                            chart: {
+                                type: 'pieChart',
+                                height: 250,
+                                x: function(d){return d.key;},
+                                y: function(d){return d.y;},
+                                showLabels: true,
+                                labelSunbeamLayout: true,
+                                legend: {
+                                    margin: {
+                                        top: 5,
+                                        right: 35,
+                                        bottom: 5,
+                                        left: 0
+                                    }
+                                }
+                            }
+                        },
+                        data: genderData
                     },
                     encounters: {
                         options: {
@@ -91,17 +113,18 @@ angular.module("managerdashboard")
 
     .controller("LastWeekEncountersGraphController", ["$scope", "GraphGenerator", function ($scope, GraphGenerator) {
 
-        $scope.fromToday = function(numDays) {
+        $scope.fromToday = function(numDays, step) {
             $scope.setEndDate = moment().endOf('day').toDate();
             $scope.setStartDate = moment().startOf('day').add(-numDays, 'day').toDate();
+            $scope.step = step;
         }
 
-        $scope.fromToday(30);
+        $scope.fromToday(30, 1);
 
-        $scope.$watchGroup(['setStartDate', 'setEndDate'], function() {
+        $scope.$watchGroup(['setStartDate', 'setEndDate', 'step'], function() {
             $scope.startDate = moment($scope.setStartDate);
             $scope.endDate = moment($scope.setEndDate);
-            $scope.graph = GraphGenerator.generateFor($scope.startDate, $scope.endDate);
+            $scope.graph = GraphGenerator.generateFor($scope.startDate, $scope.endDate, $scope.step);
         });
 
         $scope.popupStatus = {};

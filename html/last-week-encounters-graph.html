@@ -6,9 +6,13 @@
 <div class="row">
     <div class="col-md-6">
         Quick view:
-        <a ng-click="fromToday(7)">Week</a> | <a ng-click="fromToday(30)">Month</a>
+        <a ng-click="fromToday(7, 1)">Week</a> |
+        <a ng-click="fromToday(30, 1)">Month</a> |
+        <a ng-click="fromToday(91, 7)">3 Months</a> |
+        <a ng-click="fromToday(180, 30)">6 Months</a> |
+        <a ng-click="fromToday(360, 30)">Year</a>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         From:
         <p class="input-group">
             <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setStartDate" is-open="popupStatus.startDateOpened" ng-required="true" close-text="Close" />
@@ -17,7 +21,7 @@
             </span>
         </p>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         To:
         <p class="input-group">
             <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setEndDate" is-open="popupStatus.endDateOpened" ng-required="true" close-text="Close" />
@@ -26,6 +30,12 @@
             </span>
         </p>
     </div>
+    <div class="col-md-2">
+        Step (days):
+        <p class="input-group">
+            <input type="number" class="form-control" ng-model="step" min="1" ng-required="true"/>
+        </p>
+    </div>
 </div>
 
-<nvd3 options="encounters.graph.options" data="encounters.graph.data"></nvd3>
+<nvd3 options="graph.encounters.options" data="graph.encounters.data"></nvd3>
