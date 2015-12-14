@@ -15,7 +15,8 @@
     <div class="col-md-2">
         From:
         <p class="input-group">
-            <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setStartDate" is-open="popupStatus.startDateOpened" ng-required="true" close-text="Close" />
+            <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setStartDate"
+                   is-open="popupStatus.startDateOpened" ng-required="true" close-text="Close" date-disabled="disabledStart(date,mode)"/>
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="popupStatus.startDateOpened = true"><i class="glyphicon glyphicon-calendar"></i></button>
             </span>
@@ -24,7 +25,8 @@
     <div class="col-md-2">
         To:
         <p class="input-group">
-            <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setEndDate" is-open="popupStatus.endDateOpened" ng-required="true" close-text="Close" />
+            <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setEndDate"
+                   is-open="popupStatus.endDateOpened" ng-required="true" close-text="Close" date-disabled="disabledEnd(date,mode)"/>
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="popupStatus.endDateOpened = true"><i class="glyphicon glyphicon-calendar"></i></button>
             </span>

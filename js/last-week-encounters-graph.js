@@ -124,8 +124,19 @@ angular.module("managerdashboard")
         $scope.$watchGroup(['setStartDate', 'setEndDate', 'step'], function() {
             $scope.startDate = moment($scope.setStartDate);
             $scope.endDate = moment($scope.setEndDate);
+            if ($scope.endDate.isBefore($scope.startDate)) {
+                $scope.setStartDate = $scope.setEndDate;
+            }
             $scope.graph = GraphGenerator.generateFor($scope.startDate, $scope.endDate, $scope.step);
         });
 
         $scope.popupStatus = {};
+
+        $scope.disabledStart = function(date, mode) {
+            return moment(date).isAfter($scope.endDate);
+        }
+
+        $scope.disabledEnd = function(date, mode) {
+            return moment(date).isBefore($scope.startDate) || moment(date).startOf('day').isAfter(moment());
+        }
     }]);
