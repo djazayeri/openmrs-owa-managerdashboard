@@ -1,6 +1,31 @@
 <h3>
     Patients Seen
-    <i class="fa fa-info-circle" uib-tooltip="Count of number of patients who have encounters on the given date" tooltip-placement="right"></i>
+    <small>Count of number of patients who have encounters on the given date</small>
 </h3>
 
-<nvd3 options="chartOptions" data="chartData"></nvd3>
+<div class="row">
+    <div class="col-md-4">
+        Quick view:
+        <a ng-click="fromToday(7)">Week</a> | <a ng-click="fromToday(30)">Month</a>
+    </div>
+    <div class="col-md-4">
+        From:
+        <p class="input-group">
+            <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setStartDate" is-open="popupStatus.startDateOpened" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="popupStatus.startDateOpened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+        </p>
+    </div>
+    <div class="col-md-4">
+        To:
+        <p class="input-group">
+            <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setEndDate" is-open="popupStatus.endDateOpened" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="popupStatus.endDateOpened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+        </p>
+    </div>
+</div>
+
+<nvd3 options="graph.options" data="graph.data"></nvd3>

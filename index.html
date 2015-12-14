@@ -22,6 +22,7 @@
     <script src="js/app.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/last-week-encounters-graph.js"></script>
+    <script src="js/programs-overview.js"></script>
 </head>
 
 <body ng-app="managerdashboard">
@@ -30,6 +31,13 @@
         /* See https://angular-ui.github.io/bootstrap/ */
         .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
     </style>
+
+    <nav class="navbar navbar-default">
+        <ul class="nav nav-pills">
+            <li role="presentation"><a ui-sref="last-week-encounters-graph">Recently Seen</a></li>
+            <li role="presentation"><a ui-sref="programs-overview">Programs</a></li>
+        </ul>
+    </nav>
 
     <div class="container">
         <ui-view/>

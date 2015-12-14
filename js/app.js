@@ -9,6 +9,11 @@ angular.module("managerdashboard", ["ngResource", "ui.router", "ui.bootstrap", "
                 url: "/last-week-encounters-graph",
                 templateUrl: "html/last-week-encounters-graph.html",
                 controller: "LastWeekEncountersGraphController"
+            })
+            .state("programs-overview", {
+                url: "/programs-overview",
+                templateUrl: "html/programs-overview.html",
+                controller: "ProgramsOverviewController"
             });
     })
 
