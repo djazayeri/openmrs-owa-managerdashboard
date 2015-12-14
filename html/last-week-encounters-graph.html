@@ -4,11 +4,11 @@
 </h3>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         Quick view:
         <a ng-click="fromToday(7)">Week</a> | <a ng-click="fromToday(30)">Month</a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         From:
         <p class="input-group">
             <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setStartDate" is-open="popupStatus.startDateOpened" ng-required="true" close-text="Close" />
@@ -17,7 +17,7 @@
             </span>
         </p>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         To:
         <p class="input-group">
             <input type="text" class="form-control" uib-datepicker-popup="d MMM yyyy" ng-model="setEndDate" is-open="popupStatus.endDateOpened" ng-required="true" close-text="Close" />

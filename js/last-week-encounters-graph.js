@@ -8,6 +8,7 @@ angular.module("managerdashboard")
                 var results = {};
                 var data = {
                     "key" : "Patients with encounters",
+                    "bar" : true,
                     "values" : []
                 };
 
@@ -33,20 +34,28 @@ angular.module("managerdashboard")
                     data.values = _.map(dates, function(d) {
                         var showMonth = d === dates[0] || d.date() === 1;
                         return {
-                            label: d.format(showMonth ? "D MMM" : "D"),
+                            date: d, // d.format(showMonth ? "D MMM" : "D"),
                             value: results[d.toISOString()]
                         };
                     });
                 });
 
+                function formatDateShort(d) {
+                    return moment(d).format("D MMM");
+                }
+
+                function formatDateLong(d) {
+                    return moment(d).format("DD-MMM-YYYY");
+                }
+
                 return {
                     dates: dates,
                     options: {
                         chart: {
-                            type: 'discreteBarChart',
+                            type: 'historicalBarChart',
                             height: 500,
                             x: function (d) {
-                                return d.label;
+                                return d.date.valueOf();
                             },
                             y: function (d) {
                                 return d.value;
@@ -55,9 +64,15 @@ angular.module("managerdashboard")
                             valueFormat: function(d) {
                                 return Math.round(d);
                             },
+                            xAxis: {
+                                tickFormat: formatDateShort
+                            },
                             yAxis: {
                                 axisLabel: "Patients with Encounters",
                                 "axisLabelDistance": -10
+                            },
+                            tooltip: {
+                                keyFormatter: formatDateLong
                             }
                         }
                     },
