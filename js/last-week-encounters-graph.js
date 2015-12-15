@@ -1,6 +1,6 @@
 angular.module("managerdashboard")
 
-    .factory("GraphGenerator", [ "EvaluateCohort", "$q", function(EvaluateCohort, $q) {
+    .factory("GraphGenerator", [ "EvaluateCohort", "QueryConstants", "$q", function(EvaluateCohort, QueryConstants, $q) {
         return {
             generateFor: function(fromDate, toDate, step) {
                 var dates = [];
@@ -11,9 +11,21 @@ angular.module("managerdashboard")
                     "bar" : true,
                     "values" : []
                 };
-
                 var genderData = [];
-                // reportingrest does not yet give us a way to do a compound query, so we can't combine gender with encounter during period
+                EvaluateCohort.save({
+                    serializedXml: QueryConstants.malesWithEncounterDuringPeriod,
+                    startDate: fromDate.toISOString(),
+                    endDate: toDate.toISOString()
+                }).$promise.then(function(response) {
+                    genderData.push({ label: "Male", value: response.members.length });
+                });
+                EvaluateCohort.save({
+                    serializedXml: QueryConstants.femalesWithEncounterDuringPeriod,
+                    startDate: fromDate.toISOString(),
+                    endDate: toDate.toISOString()
+                }).$promise.then(function(response) {
+                    genderData.push({ label: "Female", value: response.members.length });
+                });
 
                 function handleDate(date, step) {
                     var startOfPeriod = date.clone();
@@ -58,19 +70,18 @@ angular.module("managerdashboard")
                         options: {
                             chart: {
                                 type: 'pieChart',
-                                height: 250,
-                                x: function(d){return d.key;},
-                                y: function(d){return d.y;},
-                                showLabels: true,
-                                labelSunbeamLayout: true,
-                                legend: {
-                                    margin: {
-                                        top: 5,
-                                        right: 35,
-                                        bottom: 5,
-                                        left: 0
-                                    }
-                                }
+                                height: 350,
+                                x: function(d){return d.label;},
+                                y: function(d){return d.value;},
+                                //showLabels: true,
+                                //legend: {
+                                //    margin: {
+                                //        top: 5,
+                                //        right: 35,
+                                //        bottom: 5,
+                                //        left: 0
+                                //    }
+                                //}
                             }
                         },
                         data: genderData
@@ -115,7 +126,7 @@ angular.module("managerdashboard")
 
         $scope.fromToday = function(numDays, step) {
             $scope.setEndDate = moment().endOf('day').toDate();
-            $scope.setStartDate = moment().startOf('day').add(-numDays, 'day').toDate();
+            $scope.setStartDate = moment().startOf('day').add(-(numDays-1), 'day').toDate();
             $scope.step = step;
         }
 
