@@ -2,8 +2,9 @@ angular.module("managerdashboard")
 
     .factory("GraphGenerator", [ "EvaluateCohort", "QueryConstants", "$q", function(EvaluateCohort, QueryConstants, $q) {
         return {
-            generateFor: function(fromDate, toDate, step) {
-                var dates = [];
+            generateFor: function(fromDate, toDate, step, formatDateRangeFromIsoDate) {
+                var thisYear = moment().year();
+                var dateRanges = [];
                 var promises = [];
                 var results = {};
                 var encountersData = {
@@ -29,8 +30,11 @@ angular.module("managerdashboard")
 
                 function handleDate(date, step) {
                     var startOfPeriod = date.clone();
-                    dates.push(startOfPeriod);
                     var endOfPeriod = moment(startOfPeriod).add(step - 1, 'day').endOf("day");
+                    dateRanges.push({
+                        start: startOfPeriod,
+                        end: step > 1 ? endOfPeriod : null
+                    });
                     var query = EvaluateCohort.query({
                         key: "anyEncounterDuringPeriod",
                         startDate: startOfPeriod.toISOString(),
@@ -47,25 +51,15 @@ angular.module("managerdashboard")
                 }
 
                 $q.all(promises).then(function() {
-                    encountersData.values = _.map(dates, function(d) {
-                        var showMonth = d === dates[0] || d.date() === 1;
+                    encountersData.values = _.map(dateRanges, function(dr) {
                         return {
-                            date: d, // d.format(showMonth ? "D MMM" : "D"),
-                            value: results[d.toISOString()]
+                            start: dr.start.toISOString(),
+                            value: results[dr.start.toISOString()]
                         };
                     });
                 });
 
-                function formatDateShort(d) {
-                    return moment(d).format("D MMM");
-                }
-
-                function formatDateLong(d) {
-                    return moment(d).format("DD-MMM-YYYY");
-                }
-
                 return {
-                    dates: dates,
                     genders: {
                         options: {
                             chart: {
@@ -89,10 +83,10 @@ angular.module("managerdashboard")
                     encounters: {
                         options: {
                             chart: {
-                                type: 'historicalBarChart',
+                                type: 'discreteBarChart',
                                 height: 500,
                                 x: function (d) {
-                                    return d.date.valueOf();
+                                    return d.start;
                                 },
                                 y: function (d) {
                                     return d.value;
@@ -102,15 +96,16 @@ angular.module("managerdashboard")
                                     return Math.round(d);
                                 },
                                 xAxis: {
-                                    tickFormat: formatDateShort
+                                    tickFormat: formatDateRangeFromIsoDate,
+                                    staggerLabels: dateRanges.length > 10
                                 },
                                 yAxis: {
                                     axisLabel: "Patients with Encounters",
                                     "axisLabelDistance": -10
                                 },
-                                tooltip: {
-                                    keyFormatter: formatDateLong
-                                }
+                                //tooltip: {
+                                //    keyFormatter: formatDateRangeLong
+                                //}
                             }
                         },
                         data: [
@@ -125,9 +120,9 @@ angular.module("managerdashboard")
     .controller("LastWeekEncountersGraphController", ["$scope", "GraphGenerator", function ($scope, GraphGenerator) {
 
         $scope.fromToday = function(numDays, step) {
+            $scope.step = step;
             $scope.setEndDate = moment().endOf('day').toDate();
             $scope.setStartDate = moment().startOf('day').add(-(numDays-1), 'day').toDate();
-            $scope.step = step;
         }
 
         $scope.fromToday(30, 1);
@@ -138,7 +133,20 @@ angular.module("managerdashboard")
             if ($scope.endDate.isBefore($scope.startDate)) {
                 $scope.setStartDate = $scope.setEndDate;
             }
-            $scope.graph = GraphGenerator.generateFor($scope.startDate, $scope.endDate, $scope.step);
+
+            var formatDateRangeFromIsoDate = function(iso) {
+                var format = $scope.startDate.year() == moment().year() ? "D/MMM" : "D/MMM/YY";
+                var start = moment(iso);
+                if ($scope.step == 1) {
+                    return start.format(format);
+                }
+                else {
+                    var end = start.clone().add($scope.step - 1, 'day');
+                    return start.format(format) + "-" + end.format(format);
+                }
+            }
+
+            $scope.graph = GraphGenerator.generateFor($scope.startDate, $scope.endDate, $scope.step, formatDateRangeFromIsoDate);
         });
 
         $scope.popupStatus = {};
